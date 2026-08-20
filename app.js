@@ -1,6 +1,6 @@
 const $ = selector => document.querySelector(selector);
 const screens = document.querySelectorAll('.screen');
-const kanaRows = ['あいうえお','かきくけこ','さしすせそ','たちつてと','なにぬねの','はひふへほ','まみむめも','やゆよ','らりるれろ','わをん'];
+const kanaRows = [['あ','い','う','え','お'],['か','き','く','け','こ'],['さ','し','す','せ','そ'],['た','ち','つ','て','と'],['な','に','ぬ','ね','の'],['は','ひ','ふ','へ','ほ'],['ま','み','む','め','も'],['や',null,'ゆ',null,'よ'],['ら','り','る','れ','ろ'],['わ','を','ん']];
 let current = 'home', currentKana = 'あ', currentQuestion;
 const traceStrokes = [], numberStrokes = [];
 
@@ -42,7 +42,8 @@ function selectKana(kana) {
   $('#traceMessage').textContent = 'うすい もじの うえを なぞろう';
   document.querySelectorAll('#kanaPicker button').forEach(button => button.classList.toggle('selected', button.textContent === kana));
 }
-kanaRows.join('').split('').forEach(kana => {
+kanaRows.flat().forEach(kana => {
+  if (kana === null) { const blank = document.createElement('span'); blank.setAttribute('aria-hidden', 'true'); $('#kanaPicker').append(blank); return; }
   const button = document.createElement('button'); button.textContent = kana;
   button.onclick = () => selectKana(kana); $('#kanaPicker').append(button);
 });
@@ -99,6 +100,7 @@ $('#checkTrace').onclick = () => {
 function newQuestion() {
   clearNumber(); const a = 1 + Math.floor(Math.random() * 4), b = 1 + Math.floor(Math.random() * 4);
   currentQuestion = { a, b, answer: a + b }; $('#question').textContent = `${a} ＋ ${b} ＝`;
+  $('#carVisual').innerHTML = `<span>${'🚓'.repeat(a)}</span><b>＋</b><span>${'🚓'.repeat(b)}</span>`;
   $('#mathMessage').textContent = 'こたえの すうじを おしてね';
 }
 function answerWithButton(digit) {
